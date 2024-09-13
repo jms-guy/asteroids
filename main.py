@@ -1,4 +1,5 @@
 import pygame
+import random 
 from constants import *
 from circleshape import *
 from player import *
@@ -40,14 +41,22 @@ def main():
             if event.type == pygame.QUIT:
                 return
         for obj in updatable:
+            if obj == player:
+                obj.shoot_timer -= (dt)
+                if obj.shoot_timer < 0:
+                    obj.shoot_timer = 0
             obj.update(dt)
 
-        for obj in asteroids:
-            if obj.is_colliding(player):
+        for asteroid in asteroids:
+            if asteroid.is_colliding(player):
                 print("Game over!")
                 return
+            for shot in shots:
+                if asteroid.is_colliding(shot):
+                    asteroid.split()
+                    shot.kill() 
 
-        pygame.Surface.fill(screen, (0,0,0))
+        pygame.Surface.fill(screen, "black")
 
         for obj in drawable:
             obj.draw(screen)
